@@ -1,4 +1,4 @@
-package Array;
+package ArrayDataStructure;
 import java.util.*;
 public class InsertionInArray {
     public static void main(String[] args) {
