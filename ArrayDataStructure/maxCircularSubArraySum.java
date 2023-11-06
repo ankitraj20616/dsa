@@ -9,44 +9,59 @@ public class maxCircularSubArraySum {
         System.out.println("ENter elements in array = ");
         for(int i=0;i<arr.length;i++)
           arr[i] = sc.nextInt();
-        System.out.println("Maximum sum of circular subArray = "+function1(arr));
+        System.out.println("Maximum sum of circular subArray = "+function3(arr));
     }
-   /* 
-        for(int i=1;i<arr.length;i++){
-            int sum = 0;
-            for(int j=i;j != j-1;j++){
-                if(j == arr.length)
-                  j = 0;
-                sum += arr[j];
-                maxSum = Math.max(maxSum, sum);  
-            }
-        }
-        return maxSum;
-    } */
     static int function1(int []arr){
-        int maxSum = subArraySum(arr);
-        for(int i=1;i<arr.length;i++){
-            leftRotateBy1(arr);
-            maxSum = Math.max(maxSum, subArraySum(arr));
-        }
-        return maxSum;
-    }
-    static int subArraySum(int []arr){
-        int maxSum = 0;
+        int res = 0;
         for(int i=0;i<arr.length;i++){
-            int sum = 0;
-            for(int j=i;j<arr.length;j++){
-                sum += arr[j];
-                maxSum = Math.max(sum,maxSum);
+            int currnt_sum = arr[i];
+            int currnt_max = arr[i];
+            for(int j=1;j<arr.length;j++){
+                int index = (i+j)%arr.length;
+                currnt_sum += arr[index];
+                currnt_max = Math.max(currnt_max, currnt_sum);
             }
+            res = Math.max(currnt_max, res);
+        }
+        return res;
+    }
+    static int function2(int []arr){
+        int maxSum = arr[0],currntSum1 = arr[0];
+        for(int i=1;i<arr.length;i++){
+           currntSum1 = Math.max(arr[i], arr[i]+currntSum1);
+           maxSum = Math.max(maxSum, currntSum1);
+        }
+        if(maxSum < 0)
+          return maxSum;
+        int minSum = arr[0],currntSum2 = arr[0];
+        for(int i=1;i<arr.length;i++){
+            currntSum2 = Math.min(arr[i], arr[i]+currntSum2);
+            minSum = Math.min(minSum, currntSum2);
+        }
+        int sum = arr[0];
+        for(int i=1;i<arr.length;i++)
+          sum += arr[i];
+        int maxOfCircular = sum - minSum;
+        return Math.max(maxSum, maxOfCircular);
+    }
+    static int maxSumOfSubArray(int []arr){
+        int maxSum = arr[0],currntSum1 = arr[0];
+        for(int i=1;i<arr.length;i++){
+           currntSum1 = Math.max(arr[i], arr[i]+currntSum1);
+           maxSum = Math.max(maxSum, currntSum1);
         }
         return maxSum;
     }
-    static void leftRotateBy1(int []arr){
-        int temp = arr[arr.length-1];
-        for(int i=0;i<arr.length-2;i++)
-          arr[i+1] = arr[i];
-        arr[0] = temp;  
+    static int function3(int []arr){
+        int normal_max = maxSumOfSubArray(arr);
+        if(normal_max < 0)
+          return normal_max;
+        int sum = 0;
+        for(int i=0;i<arr.length;i++){
+            sum += arr[i];
+            arr[i] = -1*arr[i];
+        }  
+        int maxOfCircular = sum + maxSumOfSubArray(arr);
+        return Math.max(normal_max, maxOfCircular);
     }
-
 }
